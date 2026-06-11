@@ -9,5 +9,5 @@ new class extends Component
 ?>
 
 <div>
-    {{-- Order your soul. Reduce your wants. - Augustine --}}
+    {{-- It always seems impossible until it is done. - Nelson Mandela --}}
 </div>
