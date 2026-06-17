@@ -3,7 +3,6 @@
 
         {{-- Header --}}
         <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-
             <div>
                 <h1 class="text-3xl font-bold tracking-tight">
                     Dashboard Overview

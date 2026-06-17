@@ -24,8 +24,8 @@
                     {{ __('Dashboard') }}
                 </flux:sidebar.item>
             </flux:sidebar.group>
-            <flux:sidebar.item icon="inbox" badge="12" href="#">Criteria</flux:sidebar.item>
-            <flux:sidebar.item icon="document-text" badge="40" href="#">Alternatif</flux:sidebar.item>
+            <flux:sidebar.item icon="inbox" badge="12" :href="route('criteria')" :current="request()->routeIs('criteria')" wire:navigate>{{ __('Criteria') }}</flux:sidebar.item>
+            <flux:sidebar.item icon="document-text" badge="40" :href="route('alternative')" :current="request()->routeIs('alternative')" wire:navigate>{{ __('Alternative') }}</flux:sidebar.item>
             <flux:sidebar.group expandable icon="star" heading="Perhitungan" class="grid">
                 <flux:sidebar.item href="#">Marketing site</flux:sidebar.item>
                 <flux:sidebar.item href="#">Android app</flux:sidebar.item>
@@ -45,7 +45,6 @@
                 </div>
             </div>
         </flux:sidebar.nav>
-
 
         <x-desktop-user-menu class="hidden lg:block" :name="auth()->user()->name" />
     </flux:sidebar>
