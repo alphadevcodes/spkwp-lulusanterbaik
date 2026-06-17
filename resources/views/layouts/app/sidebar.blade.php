@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="light">
 
 <head>
     @include('partials.head')
-    @fluxAppearance
+    <!-- @fluxAppearance -->
 </head>
 
 <body class="min-h-screen bg-white dark:bg-zinc-800 antialiased">
@@ -36,10 +36,16 @@
         <flux:spacer />
 
         <flux:sidebar.nav>
-            <flux:sidebar.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
-                {{ __('Repository') }}
-            </flux:sidebar.item>
+            <div class="px-3 py-2">
+                <div class="flex items-center justify-between rounded-lg border border-zinc-200 px-3 py-2 dark:border-zinc-700">
+                    <span class="text-sm font-medium">
+                        Dark Mode
+                    </span>
+                    <flux:switch x-data x-model="$flux.dark" />
+                </div>
+            </div>
         </flux:sidebar.nav>
+
 
         <x-desktop-user-menu class="hidden lg:block" :name="auth()->user()->name" />
     </flux:sidebar>
@@ -56,6 +62,7 @@
                 icon-trailing="chevron-down" />
 
             <flux:menu>
+                <flux:switch x-data x-model="$flux.dark" label="Dark mode" />
                 <flux:menu.radio.group>
                     <div class="p-0 text-sm font-normal">
                         <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
