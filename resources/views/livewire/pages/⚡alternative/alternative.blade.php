@@ -4,11 +4,11 @@
 
             <div>
                 <h1 class="text-3xl font-bold tracking-tight">
-                    Management Criteria
+                    Management Alternatif
                 </h1>
 
                 <p class="mt-1 text-sm text-zinc-500">
-                    Monitor all criteria.
+                    Monitor all Alternatif.
                 </p>
             </div>
 
@@ -19,7 +19,7 @@
                     </flux:breadcrumbs.item>
 
                     <flux:breadcrumbs.item>
-                        Criteria
+                        Alternatif
                     </flux:breadcrumbs.item>
                 </flux:breadcrumbs>
             </div>
