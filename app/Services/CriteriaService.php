@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Enums\CriteriaAttribute;
+use App\Enums\CriteriaCategory;
 use App\Models\Criteria;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
@@ -13,11 +15,12 @@ class CriteriaService
      * Ambil daftar criteria dengan search, filter, sort, dan pagination.
      *
      * @param  array{search?: string|null, category?: string|null, attribute?: string|null, sortField?: string, sortDirection?: string}  $filters
+     * @return LengthAwarePaginator<int, Criteria>
      */
     public function paginate(array $filters = [], int $perPage = 10): LengthAwarePaginator
     {
         $sortField = $filters['sortField'] ?? 'code';
-        $sortDirection = $filters['sortDirection'] ?? 'asc';
+        $sortDirection = $this->normalizeSortDirection($filters['sortDirection'] ?? 'asc');
 
         return Criteria::query()
             ->search($filters['search'] ?? null)
@@ -25,6 +28,15 @@ class CriteriaService
             ->attribute($filters['attribute'] ?? null)
             ->orderBy($sortField, $sortDirection)
             ->paginate($perPage);
+    }
+
+
+    /**
+     * @return 'asc'|'desc'
+     */
+    private function normalizeSortDirection(string $direction): string
+    {
+        return $direction === 'desc' ? 'desc' : 'asc';
     }
 
     /**
@@ -42,7 +54,7 @@ class CriteriaService
      */
     public function create(array $data): Criteria
     {
-        return DB::transaction(fn () => Criteria::create($data));
+        return DB::transaction(fn() => Criteria::create($data));
     }
 
     /**
@@ -67,15 +79,6 @@ class CriteriaService
         return (bool) $criteria->delete();
     }
 
-    /**
-     * Hapus banyak criteria sekaligus (bulk delete).
-     *
-     * @param  array<int, int|string>  $ids
-     */
-    public function deleteMany(array $ids): int
-    {
-        return Criteria::query()->whereIn('id', $ids)->delete();
-    }
 
     /**
      * Validation rules untuk dipakai di Livewire component (create & update).
@@ -86,10 +89,10 @@ class CriteriaService
     public function rules(?int $ignoreId = null): array
     {
         return [
-            'form.code' => ['required', 'string', 'max:20', Rule::unique('criterias', 'code')->ignore($ignoreId)],
+            'form.code' => ['required', 'string', 'max:20', Rule::unique(Criteria::class, 'code')->ignore($ignoreId)],
             'form.name' => ['required', 'string', 'max:255'],
-            'form.category' => ['required', Rule::in(array_column(\App\Enums\CriteriaCategory::options(), 'value'))],
-            'form.attribute' => ['required', Rule::in(array_column(\App\Enums\CriteriaAttribute::options(), 'value'))],
+            'form.category' => ['required', Rule::enum(CriteriaCategory::class)],
+            'form.attribute' => ['required', Rule::enum(CriteriaAttribute::class)],
             'form.weight' => ['required', 'integer', 'min:0', 'max:100'],
         ];
     }

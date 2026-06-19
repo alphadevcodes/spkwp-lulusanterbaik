@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Enums\CriteriaAttribute;
 use App\Enums\CriteriaCategory;
+use App\Models\Criteria;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -19,10 +20,11 @@ class UpdateCriteriaRequest extends FormRequest
      */
     public function rules(): array
     {
-        $criteriaId = $this->route('criteria')?->id ?? $this->input('id');
+        /** @var Criteria $criteria */
+        $criteria = $this->route('criteria');
 
         return [
-            'code' => ['required', 'string', 'max:20', Rule::unique('criterias', 'code')->ignore($criteriaId)],
+            'code' => ['required', 'string', 'max:20', Rule::unique(Criteria::class, 'code')->ignore($criteria->id)],
             'name' => ['required', 'string', 'max:255'],
             'category' => ['required', Rule::enum(CriteriaCategory::class)],
             'attribute' => ['required', Rule::enum(CriteriaAttribute::class)],
