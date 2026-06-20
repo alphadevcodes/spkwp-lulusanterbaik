@@ -14,8 +14,8 @@ class AlternativeValue extends Model
         return ['value' => 'decimal:2'];
     }
  
-    /**
-     * @return BelongsTo<Alternative, AlternativeValue>
+     /**
+     * @return BelongsTo<Alternative, covariant $this>
      */
     public function alternative(): BelongsTo
     {
@@ -23,7 +23,7 @@ class AlternativeValue extends Model
     }
  
     /**
-     * @return BelongsTo<Criteria, AlternativeValue>
+     * @return BelongsTo<Criteria, covariant $this>
      */
     public function criteria(): BelongsTo
     {

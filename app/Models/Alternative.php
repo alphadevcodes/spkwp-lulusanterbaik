@@ -14,7 +14,7 @@ class Alternative extends Model
     /**
      * Semua baris nilai (pivot) milik alternative ini.
      *
-     * @return HasMany<AlternativeValue, Alternative>
+     * @return HasMany<AlternativeValue, covariant $this>
      */
     public function values(): HasMany
     {
@@ -25,7 +25,7 @@ class Alternative extends Model
      * Relasi many-to-many ke Criteria lewat tabel pivot alternative_values,
      * dengan kolom tambahan 'value' (nilai siswa untuk criteria tsb).
      *
-     * @return BelongsToMany<Criteria, Alternative>
+     * @return BelongsToMany<Criteria, covariant $this>
      */
     public function criterias(): BelongsToMany
     {

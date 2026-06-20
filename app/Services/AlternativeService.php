@@ -60,7 +60,6 @@ class AlternativeService
     public function valuesForForm(Alternative $alternative): array
     {
         return $alternative->values()
-            ->get(['criteria_id', 'value'])
             ->pluck('value', 'criteria_id')
             ->map(fn ($v) => (string) $v)
             ->toArray();
