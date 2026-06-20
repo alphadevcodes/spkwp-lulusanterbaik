@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Criteria extends Model
 {
@@ -12,6 +14,28 @@ class Criteria extends Model
     protected function casts(): array
     {
         return ['weight' => 'integer'];
+    }
+
+    /**
+     * Semua baris nilai (pivot) milik criteria ini.
+     *
+     * @return HasMany<AlternativeValue, covariant $this>
+     */
+    public function values(): HasMany
+    {
+        return $this->hasMany(AlternativeValue::class);
+    }
+
+    /**
+     * Relasi many-to-many ke Alternative lewat tabel pivot alternative_values.
+     *
+     * @return BelongsToMany<Alternative, covariant $this>
+     */
+    public function alternatives(): BelongsToMany
+    {
+        return $this->belongsToMany(Alternative::class, 'alternative_values')
+            ->withPivot('id', 'value')
+            ->withTimestamps();
     }
 
     /**
