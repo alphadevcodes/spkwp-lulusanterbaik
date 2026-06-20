@@ -9,6 +9,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('overview','pages::overview')->name('overview');
     Route::livewire('criteria','pages::criteria')->name('criteria');
     Route::livewire('alternative','pages::alternative')->name('alternative');
+    Route::livewire('/ranking/calculate', 'pages::rekomendasi')
+    ->name('ranking.calculate');
 
 });
 

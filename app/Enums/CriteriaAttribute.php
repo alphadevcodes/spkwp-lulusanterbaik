@@ -56,4 +56,19 @@ enum CriteriaAttribute: string
             self::COST => $value > 0 ? $min / $value : 0.0,
         };
     }
+
+    /**
+     * Tanda pangkat bobot untuk metode Weighted Product (WP).
+     *
+     * Kriteria benefit dipangkatkan dengan bobot POSITIF (+wj),
+     * kriteria cost dipangkatkan dengan bobot NEGATIF (-wj),
+     * sehingga nilai cost yang besar otomatis memperkecil hasil perkalian Vektor S.
+     */
+    public function weightSign(): int
+    {
+        return match ($this) {
+            self::BENEFIT => 1,
+            self::COST => -1,
+        };
+    }
 }
