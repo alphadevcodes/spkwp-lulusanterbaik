@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\CriteriaAttribute;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -13,7 +14,10 @@ class Criteria extends Model
 
     protected function casts(): array
     {
-        return ['weight' => 'integer'];
+        return [
+            'weight' => 'integer',
+            'attribute' => CriteriaAttribute::class,
+        ];
     }
 
     /**
