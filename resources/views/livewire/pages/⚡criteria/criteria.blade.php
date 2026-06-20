@@ -31,27 +31,26 @@
                 wire:model.live.debounce.400ms="search"
                 placeholder="Cari kode atau nama kriteria..."
                 icon="magnifying-glass"
-                class="sm:max-w-xs"
-            />
+                class="sm:max-w-xs" />
 
             <flux:select wire:model.live="category" placeholder="Semua Kategori" class="sm:max-w-[160px]">
                 <flux:select.option value="">Semua Kategori</flux:select.option>
                 @foreach ($this->categoryOptions as $option)
-                    <flux:select.option value="{{ $option['value'] }}">{{ $option['label'] }}</flux:select.option>
+                <flux:select.option value="{{ $option['value'] }}">{{ $option['label'] }}</flux:select.option>
                 @endforeach
             </flux:select>
 
             <flux:select wire:model.live="attribute" placeholder="Semua Atribut" class="sm:max-w-[160px]">
                 <flux:select.option value="">Semua Atribut</flux:select.option>
                 @foreach ($this->attributeOptions as $option)
-                    <flux:select.option value="{{ $option['value'] }}">{{ $option['label'] }}</flux:select.option>
+                <flux:select.option value="{{ $option['value'] }}">{{ $option['label'] }}</flux:select.option>
                 @endforeach
             </flux:select>
 
             @if ($search || $category || $attribute)
-                <flux:button wire:click="resetFilters" variant="ghost" size="sm" icon="x-mark">
-                    Reset
-                </flux:button>
+            <flux:button wire:click="resetFilters" variant="ghost" size="sm" icon="x-mark">
+                Reset
+            </flux:button>
             @endif
         </div>
 
@@ -74,16 +73,14 @@
                     sortable
                     :sorted="$sortField === 'code'"
                     :direction="$sortDirection"
-                    wire:click="sortBy('code')"
-                >
+                    wire:click="sortBy('code')">
                     Kode
                 </flux:table.column>
                 <flux:table.column
                     sortable
                     :sorted="$sortField === 'name'"
                     :direction="$sortDirection"
-                    wire:click="sortBy('name')"
-                >
+                    wire:click="sortBy('name')">
                     Nama
                 </flux:table.column>
                 <flux:table.column>Kategori</flux:table.column>
@@ -92,8 +89,7 @@
                     sortable
                     :sorted="$sortField === 'weight'"
                     :direction="$sortDirection"
-                    wire:click="sortBy('weight')"
-                >
+                    wire:click="sortBy('weight')">
                     Bobot
                 </flux:table.column>
                 <flux:table.column>Aksi</flux:table.column>
@@ -101,45 +97,43 @@
 
             <flux:table.rows>
                 @forelse ($criterias as $criteria)
-                    <flux:table.row :key="$criteria->id" wire:loading.class.delay="opacity-50">
-                        <flux:table.cell class="font-mono text-sm">{{ $criteria->code }}</flux:table.cell>
-                        <flux:table.cell>{{ $criteria->name }}</flux:table.cell>
-                        <flux:table.cell>
-                            <flux:badge size="sm" :color="$criteria->category === 'utama' ? 'blue' : 'zinc'">
-                                {{ ucfirst($criteria->category) }}
-                            </flux:badge>
-                        </flux:table.cell>
-                        <flux:table.cell>
-                            <flux:badge size="sm" :color="$criteria->attribute === 'benefit' ? 'green' : 'red'">
-                                {{ ucfirst($criteria->attribute) }}
-                            </flux:badge>
-                        </flux:table.cell>
-                        <flux:table.cell>{{ $criteria->weight }}%</flux:table.cell>
-                        <flux:table.cell>
-                            <div class="flex items-center gap-2">
-                                <flux:button
-                                    wire:click="edit({{ $criteria->id }})"
-                                    size="sm"
-                                    variant="ghost"
-                                    icon="pencil"
-                                    inset
-                                />
-                                <flux:button
-                                    wire:click="confirmDelete({{ $criteria->id }})"
-                                    size="sm"
-                                    variant="ghost"
-                                    icon="trash"
-                                    inset
-                                />
-                            </div>
-                        </flux:table.cell>
-                    </flux:table.row>
+                <flux:table.row :key="$criteria->id" wire:loading.class.delay="opacity-50">
+                    <flux:table.cell class="font-mono text-sm">{{ $criteria->code }}</flux:table.cell>
+                    <flux:table.cell>{{ $criteria->name }}</flux:table.cell>
+                    <flux:table.cell>
+                        <flux:badge size="sm" :color="$criteria->category === 'utama' ? 'blue' : 'zinc'">
+                            {{ ucfirst($criteria->category) }}
+                        </flux:badge>
+                    </flux:table.cell>
+                    <flux:table.cell>
+                        <flux:badge size="sm" :color="$criteria->attribute->value === 'benefit' ? 'green' : 'red'">
+                            {{ ucfirst($criteria->attribute->value) }}
+                        </flux:badge>
+                    </flux:table.cell>
+                    <flux:table.cell>{{ $criteria->weight }}%</flux:table.cell>
+                    <flux:table.cell>
+                        <div class="flex items-center gap-2">
+                            <flux:button
+                                wire:click="edit({{ $criteria->id }})"
+                                size="sm"
+                                variant="ghost"
+                                icon="pencil"
+                                inset />
+                            <flux:button
+                                wire:click="confirmDelete({{ $criteria->id }})"
+                                size="sm"
+                                variant="ghost"
+                                icon="trash"
+                                inset />
+                        </div>
+                    </flux:table.cell>
+                </flux:table.row>
                 @empty
-                    <flux:table.row>
-                        <flux:table.cell colspan="6" class="py-10 text-center text-zinc-500">
-                            Tidak ada data kriteria.
-                        </flux:table.cell>
-                    </flux:table.row>
+                <flux:table.row>
+                    <flux:table.cell colspan="6" class="py-10 text-center text-zinc-500">
+                        Tidak ada data kriteria.
+                    </flux:table.cell>
+                </flux:table.row>
                 @endforelse
             </flux:table.rows>
         </flux:table>
@@ -166,24 +160,22 @@
                 wire:model="form.code"
                 label="Kode"
                 placeholder="C1"
-                maxlength="20"
-            />
+                maxlength="20" />
 
             <flux:input
                 wire:model="form.name"
                 label="Nama Kriteria"
-                placeholder="Misal: Harga, Kualitas, Jarak"
-            />
+                placeholder="Misal: Harga, Kualitas, Jarak" />
 
             <flux:select wire:model="form.category" label="Kategori">
                 @foreach ($this->categoryOptions as $option)
-                    <flux:select.option value="{{ $option['value'] }}">{{ $option['label'] }}</flux:select.option>
+                <flux:select.option value="{{ $option['value'] }}">{{ $option['label'] }}</flux:select.option>
                 @endforeach
             </flux:select>
 
             <flux:select wire:model="form.attribute" label="Atribut">
                 @foreach ($this->attributeOptions as $option)
-                    <flux:select.option value="{{ $option['value'] }}">{{ $option['label'] }}</flux:select.option>
+                <flux:select.option value="{{ $option['value'] }}">{{ $option['label'] }}</flux:select.option>
                 @endforeach
             </flux:select>
 
@@ -192,8 +184,7 @@
                 label="Bobot (%)"
                 type="number"
                 min="0"
-                max="100"
-            />
+                max="100" />
 
             <div class="flex justify-end gap-2">
                 <flux:button type="button" variant="ghost" wire:click="$set('showModal', false)">

@@ -26,11 +26,12 @@
             </flux:sidebar.group>
             <flux:sidebar.item icon="inbox" badge="12" :href="route('criteria')" :current="request()->routeIs('criteria')" wire:navigate>{{ __('Criteria') }}</flux:sidebar.item>
             <flux:sidebar.item icon="document-text" badge="40" :href="route('alternative')" :current="request()->routeIs('alternative')" wire:navigate>{{ __('Alternative') }}</flux:sidebar.item>
-            <flux:sidebar.group expandable icon="star" heading="Perhitungan" class="grid">
+            <flux:sidebar.item icon="document-text" badge="40" :href="route('ranking.calculate')" :current="request()->routeIs('ranking.calculate')" wire:navigate>{{ __('Rekomendasi') }}</flux:sidebar.item>
+            <!-- <flux:sidebar.group expandable icon="star" heading="Perhitungan" class="grid">
                 <flux:sidebar.item href="#">Marketing site</flux:sidebar.item>
                 <flux:sidebar.item href="#">Android app</flux:sidebar.item>
                 <flux:sidebar.item href="#">Brand guidelines</flux:sidebar.item>
-            </flux:sidebar.group>
+            </flux:sidebar.group> -->
         </flux:sidebar.nav>
 
         <flux:spacer />
