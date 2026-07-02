@@ -79,7 +79,7 @@
                                 </p>
 
                                 <h3 class="mt-2 text-3xl font-bold">
-                                    12
+                                    2
                                 </h3>
                             </div>
 
@@ -98,7 +98,7 @@
                                 </p>
 
                                 <h3 class="mt-2 text-3xl font-bold">
-                                    28
+                                    26
                                 </h3>
                             </div>
 
@@ -117,7 +117,7 @@
                                 </p>
 
                                 <h3 class="mt-2 text-3xl font-bold">
-                                    8
+                                    1
                                 </h3>
                             </div>
 
@@ -127,26 +127,6 @@
                             </div>
                         </div>
                     </flux:card>
-
-                    <flux:card>
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm text-zinc-500">
-                                    Calculations
-                                </p>
-
-                                <h3 class="mt-2 text-3xl font-bold">
-                                    56
-                                </h3>
-                            </div>
-
-                            <div
-                                class="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-100 text-amber-600">
-                                <flux:icon name="calculator" />
-                            </div>
-                        </div>
-                    </flux:card>
-
                 </div>
             </div>
 
@@ -188,7 +168,7 @@
                         </p>
 
                         <p class="text-2xl font-bold">
-                            Alternative A
+                            Siswa 5
                         </p>
                     </div>
 
@@ -198,7 +178,7 @@
                         </p>
 
                         <p class="text-2xl font-bold text-emerald-600">
-                            0.92
+                            0.040026
                         </p>
                     </div>
 
