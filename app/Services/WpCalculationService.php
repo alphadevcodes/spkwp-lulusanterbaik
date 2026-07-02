@@ -14,6 +14,7 @@ class WpCalculationService
 {
     public function calculate(): WpCalculationResult
     {
+        /** @var Collection<int, Criteria> $criterias */
         $criterias = Criteria::query()
             ->select('id', 'code', 'name', 'attribute', 'weight')
             ->orderBy('code')
@@ -21,6 +22,7 @@ class WpCalculationService
 
         $weights = $this->normalizeWeights($criterias);
 
+        /** @var Collection<int, Alternative> $alternatives */
         $alternatives = Alternative::query()
             ->select('id', 'code', 'student_name')
             ->with(['values:id,alternative_id,criteria_id,value'])
@@ -37,48 +39,80 @@ class WpCalculationService
         );
     }
 
+    /**
+     * @param Collection<int, Criteria> $criterias
+     * @return Collection<int, WpCriteriaWeight>
+     */
     protected function normalizeWeights(Collection $criterias): Collection
     {
         $totalWeight = (float) $criterias->sum('weight');
 
-        return $criterias->map(function (Criteria $criteria) use ($totalWeight) {
-            $rawWeight = (float) $criteria->weight;
-            $normalized = $totalWeight > 0 ? $rawWeight / $totalWeight : 0.0;
+        return $criterias
+            ->map(
+                /**
+                 * @return WpCriteriaWeight
+                 */
+                function (Criteria $criteria) use ($totalWeight): WpCriteriaWeight {
+                    $rawWeight = (int) $criteria->weight;
 
-            /** @var CriteriaAttribute $attribute */
-            $attribute = $criteria->attribute;
+                    $normalized = $totalWeight > 0
+                        ? $rawWeight / $totalWeight
+                        : 0.0;
 
-            return new WpCriteriaWeight(
-                criteriaId: $criteria->id,
-                code: $criteria->code,
-                name: $criteria->name,
-                attribute: $attribute,
-                rawWeight: $rawWeight,
-                normalizedWeight: $normalized,
-                signedExponent: $normalized * $attribute->weightSign(),
-            );
-        })->values();
+                    /** @var CriteriaAttribute $attribute */
+                    $attribute = $criteria->attribute;
+
+                    return new WpCriteriaWeight(
+                        criteriaId: $criteria->id,
+                        code: $criteria->code,
+                        name: $criteria->name,
+                        attribute: $attribute,
+                        rawWeight: $rawWeight,
+                        normalizedWeight: $normalized,
+                        signedExponent: $normalized * $attribute->weightSign(),
+                    );
+                }
+            )
+            ->values();
     }
 
     /**
-     * Hitung Vektor S (Sᵢ = ∏ xᵢⱼ^wⱼ) untuk tiap alternatif, pisahkan yang
-     * datanya lengkap dari yang dikecualikan, lalu hitung Vektor V
-     * (preferensi relatif) dan peringkat untuk alternatif yang lengkap.
-     *
-     * @return array{0: Collection<int, WpRankResult>, 1: Collection<int, WpRankResult>}
+     * @param Collection<int, Alternative> $alternatives
+     * @param Collection<int, WpCriteriaWeight> $weights
+     * @return array{
+     *     0: Collection<int, WpRankResult>,
+     *     1: Collection<int, WpRankResult>
+     * }
      */
-    protected function calculateRankings(Collection $alternatives, Collection $weights): array
-    {
+    protected function calculateRankings(
+        Collection $alternatives,
+        Collection $weights,
+    ): array {
+        /**
+         * @var Collection<int, array{
+         *     alternative_id:int,
+         *     code:string,
+         *     student_name:string,
+         *     values:array<int,float|null>,
+         *     vectorS:float
+         * }> $complete
+         */
         $complete = collect();
+
+        /** @var Collection<int, WpRankResult> $excluded */
         $excluded = collect();
 
+        /** @var Alternative $alternative */
         foreach ($alternatives as $alternative) {
             $valuesByCriteria = $alternative->values->pluck('value', 'criteria_id');
 
+            /** @var array<int,float|null> $values */
             $values = [];
+
             $vectorS = 1.0;
             $isComplete = true;
 
+            /** @var WpCriteriaWeight $weight */
             foreach ($weights as $weight) {
                 $rawValue = $valuesByCriteria[$weight->criteriaId] ?? null;
 
@@ -100,16 +134,18 @@ class WpCalculationService
             }
 
             if (! $isComplete) {
-                $excluded->push(new WpRankResult(
-                    alternativeId: $alternative->id,
-                    code: $alternative->code,
-                    studentName: $alternative->student_name,
-                    values: $values,
-                    vectorS: 0.0,
-                    vectorV: 0.0,
-                    rank: null,
-                    isComplete: false,
-                ));
+                $excluded->push(
+                    new WpRankResult(
+                        alternativeId: $alternative->id,
+                        code: $alternative->code,
+                        studentName: $alternative->student_name,
+                        values: $values,
+                        vectorS: 0.0,
+                        vectorV: 0.0,
+                        rank: null,
+                        isComplete: false,
+                    )
+                );
 
                 continue;
             }
@@ -125,23 +161,40 @@ class WpCalculationService
 
         $totalS = (float) $complete->sum('vectorS');
 
+        /** @var Collection<int, WpRankResult> $rankings */
         $rankings = $complete
-            ->sortByDesc('vectorS') // urutan sama dengan sortByDesc('vectorV'), karena vectorV = vectorS / totalS
+            ->sortByDesc('vectorS')
             ->values()
-            ->map(fn (array $row, int $index) => new WpRankResult(
-                alternativeId: $row['alternative_id'],
-                code: $row['code'],
-                studentName: $row['student_name'],
-                values: $row['values'],
-                vectorS: $row['vectorS'],
-                vectorV: $totalS > 0 ? $row['vectorS'] / $totalS : 0.0,
-                rank: $index + 1,
-                isComplete: true,
-            ));
+            ->map(
+                /**
+                 * @param array{
+                 *     alternative_id:int,
+                 *     code:string,
+                 *     student_name:string,
+                 *     values:array<int,float|null>,
+                 *     vectorS:float
+                 * } $row
+                 */
+                fn (array $row, int $index): WpRankResult => new WpRankResult(
+                    alternativeId: $row['alternative_id'],
+                    code: $row['code'],
+                    studentName: $row['student_name'],
+                    values: $row['values'],
+                    vectorS: $row['vectorS'],
+                    vectorV: $totalS > 0
+                        ? $row['vectorS'] / $totalS
+                        : 0.0,
+                    rank: $index + 1,
+                    isComplete: true,
+                )
+            );
 
         return [$rankings, $excluded->values()];
     }
 
+    /**
+     * @return array<int, string>
+     */
     public function validatePrerequisites(): array
     {
         $errors = [];
